@@ -8,7 +8,7 @@ pipeline {
 
     environment {
         SCANNER_HOME = tool 'sonar-scanner'
-        DOCKER_IMAGE = "nirmal8717/boardshack:${BUILD_NUMBER}"
+        DOCKER_IMAGE = "nirmal8717/boardgame:${BUILD_NUMBER}"
         REGISTRY_CREDENTIALS = credentials('docker-cred')
     }
 
