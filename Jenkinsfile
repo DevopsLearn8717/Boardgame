@@ -104,7 +104,8 @@ pipeline {
                     sh '''
                     git config user.email "devops.learn8717@gmail.com"
                     git config user.name "DevopsLearn8717"
-		            BUILD_NUMBER=${BUILD_NUMBER}
+		    git pull https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+		    BUILD_NUMBER=${BUILD_NUMBER}
                     sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Manifest/deployment-service.yaml
                     git add Manifest/deployment-service.yaml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
