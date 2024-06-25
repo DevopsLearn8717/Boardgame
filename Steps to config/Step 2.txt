@@ -1,0 +1,76 @@
+#####Ultimate Ci Cd pipeline
+
+##Part 2
+
+ap-south-1 
+ec2 instance t2.medium 20Gb of storage X2
+
+name them as SonarQube and Nexus
+
+sudo apt update (on both)
+
+vi dock.sh (on both)
+
+#!/bin/bash
+
+# Add Docker's official GPG key:
+sudo apt-get update
+
+# Install necessary dependencies
+sudo apt-get install -y ca-certificates curl
+
+# Create directory for Docker GPG key
+sudo install -m 0755 -d /etc/apt/keyrings
+
+# Download Docker's GPG key
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+
+# Ensure proper permissions for the key
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add Docker repository to Apt sources
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+$(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Update package manager repositories
+sudo apt-get update
+
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 
+
+sudo chmod 666 /var/run/docker.sock
+
+
+##To change the file to executable 
+
+chmod +x filename
+
+./filename
+
+docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
+
+docker run -d --name nexus -p 8081:8081 sonatype/nexus3
+
+#In nexus instance
+
+docker ps
+
+docker exec -it $containerid /bin/bash
+
+cat sonatype-work/nexus3/admin.password
+
+exit
+
+# In sonar 
+
+Adminstration > config > webhooks
+
+jenkins
+
+<jenkins url>/sonarqube-webhook/
+
+Adminstration > security > user
+
+generate token
+
+sonar-token

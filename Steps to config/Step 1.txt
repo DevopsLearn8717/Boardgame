@@ -1,0 +1,85 @@
+#####Ultimate Ci Cd pipeline
+
+##Part 1 
+
+##Can Skip this step if using local k8s and install minikube in local
+
+ap-south-1 
+ec2 instance t2.medium 25Gb of storage X3
+
+name them as master slave-1 and s-2
+
+type sudo su on all 3
+
+##1.sh should run on all 3 inst
+
+vi 1.sh
+
+sudo apt-get update
+
+sudo apt install docker.io -y
+sudo chmod 666 /var/run/docker.sock
+
+sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
+sudo mkdir -p -m 755 /etc/apt/keyrings
+
+sudo systemctl enable --now docker
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+sudo apt update
+
+sudo apt install kubeadm=1.28.1-1.1 kubelet=1.28.1-1.1 kubectl=1.28.1-1.1 -y
+
+##To change the file to executable 
+
+chmod +x 1.sh
+
+./1.sh
+
+##only in master
+
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+sudo kubeadm join 172.31.38.216:6443 --token l8om18.8p2ii3w507phie0t \
+        --discovery-token-ca-cert-hash sha256:f8fa9dc0db211e20988ebc0223aebe01446594eff7c0b6019bd3b29d19ec3265
+##Once you run the above cmd copy the kubeadm join cmd and paste in both slave's.
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.49.0/deploy/static/provider/baremetal/deploy.yaml
+
+##To check if work nodes are added
+
+kubectl get nodes
+
+#### If not workering do below on Master and Workers
+
+echo $KUBECONFIG
+
+### If empty
+
+KUBECONFIG=$HOME/.kube/config    ### only in master
+
+cat $HOME/.kube/config           ### only in master
+
+mkdir $HOME/.kube               ### only in Workers
+
+vi $HOME/.kube/config           ### only in Workers
+
+##You can see the ip of slaves
+
+https://github.com/Shopify/kubeaudit/releases
+
+wget https://github.com/Shopify/kubeaudit/releases/download/v0.22.1/kubeaudit_0.22.1_linux_amd64.tar.gz
+
+tar -xvzf kubeaudit_0.22.1_linux_amd64.tar.gz
+
+sudo mv kubeaudit /usr/local/bin/bash
+
+kubeaudit all

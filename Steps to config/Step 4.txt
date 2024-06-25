@@ -1,0 +1,41 @@
+#####Ultimate Ci Cd pipeline
+
+##Part 4
+
+manage jenkins >  Tools
+
+Add jdk
+
+jdk17
+
+install auto
+	install adoptium.net
+		jdk 17.0.9+9
+		
+sonarqube scanner
+
+sonar-scanner
+
+install auto
+	go with latest version
+	
+add maven
+
+maven3
+
+install auto
+	version 3.6.1
+	
+add docker
+
+docker
+
+install auto
+	latest
+
+
+New items 
+
+BoardGame > pipeline
+
+discard old build 
