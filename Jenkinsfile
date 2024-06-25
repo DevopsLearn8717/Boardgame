@@ -100,11 +100,11 @@ pipeline {
                 GIT_USER_NAME = "DevopsLearn8717"
             }
             steps {
-                withCredentials([string(credentialsId: 'git-cred', variable: 'GITHUB_TOKEN')]) {
+                withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
                     sh '''
                     git config user.email "devops.learn8717@gmail.com"
                     git config user.name "DevopsLearn8717"
-                    BUILD_NUMBER=${BUILD_NUMBER}
+		            BUILD_NUMBER=${BUILD_NUMBER}
                     sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Manifest/deployment-service.yaml
                     git add Manifest/deployment-service.yaml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
